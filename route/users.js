@@ -1,25 +1,11 @@
 const Router = require('express');
 const router = Router();
-const User = require('../models/userModel');
+const UserController = require('../controller/userController')
 
-// update user profile
-
-router.put('/:id', async (req,res)=>{
-    if(req.body.userId ==  req.params.id){
-        if(req.body.password){
-            const salt = await bcrypt.genSalt(10);
-            req.body.password = await bcrypt.hash(req.body.password, salt);
-        }
-    try {
-           const updateUser = await User.findByIdAndUpdate(req.params.id, { $set : req.body}, { new: true});
-           res.status(200).json(updateUser)      
-    }  
-    catch(err) {
-         res.status(500).json(err)
-    }
-    } else {
-        res.status(401).json('you can only update your profile')
-    }
-});
+// Signup
+router.post('/users/login', UserController.Signup);
+router.post('/users/logout', UserController.logout );
+router.post('/users/logoutAll', UserController.logoutAll);
+router.post('/update/:id', UserController.updateUser);
 
 module.exports = router;

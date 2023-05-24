@@ -2,21 +2,24 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-dotenv.config(); 
-const port =process.env.DB_port || 8003
+dotenv.config({ path:"./.env"}); 
+const port =process.env.DB_port || 8005
 const authRoute = require('./route/auth');
-const userRoute = require('./route/users')
+const productRoute = require('./route/product');
+const cartRoute = require('./route/cart');
+const OrderRoute = require('./route/order');
 const bodyParser = require('body-parser');
 
 
 app.listen(port, ()=>{  
-  console.log('listening to port 8003 ')  ;
+  console.log(`listening to ${port}`)  ;
   db_connect();
   
 })
 
-const uri = 'mongodb+srv://warizshowclassic:w1234567890@node-crashcourse.ofrrsdo.mongodb.net/datingApp?retryWrites=true&w=majority'
 
+
+const uri = process.env.DB_URI
 const db_connect = async () => {
 	try {
 		mongoose.set("strictQuery", false);
@@ -33,5 +36,7 @@ mongoose.connection.on("disconnected", () => {
 
 app.use(express.urlencoded({ extended : true}));
 app.use(bodyParser.json())
-app.use(authRoute)
-app.use('update' ,userRoute)
+app.use(authRoute);
+app.use(productRoute);
+app.use(OrderRoute);
+app.use(cartRoute)
